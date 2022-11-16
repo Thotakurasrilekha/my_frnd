@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="11285e36-15d7-4fb8-aecf-6014209ee985" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="061cfcda-deae-4671-9996-e857006a07bc" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="school" />
+	</db:config>
+	<flow name="task1Flow" doc:id="d69c9c94-54fd-465e-aabe-284c0afaccc4" >
+		<http:listener doc:name="Listener" doc:id="6f6f0c4d-3db8-4371-9a11-18a42dac5848" config-ref="HTTP_Listener_config" path="/task1"/>
+		<db:execute-ddl doc:name="Execute DDL" doc:id="098ae343-ea22-43cc-aeca-34ab2fe7a7c4" config-ref="Database_Config">
+			<db:sql ><![CDATA[alter table student4 add column std_state varchar(40);]]></db:sql>
+		</db:execute-ddl>
+		<ee:transform doc:name="Transform Message" doc:id="8885db42-71a3-4268-a6af-5ac837cae5de" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
